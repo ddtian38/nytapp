@@ -58,15 +58,22 @@ $("#find-article").on("click", function(){
   event.preventDefault();
 
   var articleSearch = $("#searchTerm").val();
-  var articleNum = $("#numOfRecords").val()
-  var articleStartYear = "begin_date="+$("#startYear").val()+"0101";
-  var articleEndYear = "end_date="+ $("#endYear").val() + "0101";
+  var articleNum = $("#numberOfRecords option:selected").text();
 
+  if(($("#startYear").val() !== "") && ($("#endYear").val() !== "")){
+    var articleStartYear = "&begin_date="+$("#startYear").val()+"0101";
+    var articleEndYear = "&end_date="+ $("#endYear").val() + "0101";
+  }
+  else{
+    var articleStartYear = "";
+    var articleEndYear = "";
+  }
   
 
-  var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q="+articleSearch+"&api-key=v4aiDXAyW5f6ElZhMn24JMuXjcsWIWZF&fq=headline:(\""+articleSearch+"\")&"+articleStartYear+"&="+articleEndYear+"&sort=newest"
-
-  console.log(queryURL)
+  var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q="+articleSearch+"&api-key=v4aiDXAyW5f6ElZhMn24JMuXjcsWIWZF&fq=headline:(\""+articleSearch+"\")"+articleStartYear+articleEndYear+"&sort=newest"
+  console.log("xxx")
+  console.log(articleNum);
+  console.log(queryURL);
 
   $.ajax({
           url: queryURL,
@@ -76,7 +83,7 @@ $("#find-article").on("click", function(){
 
           for(var i = 0; i < articleNum; i++ ){
             var articleLink = $("<div>").append($("<a>").text(obj.response.docs[i].headline.main).attr("href", obj.response.docs[i].web_url));
-          $ ("#articleArea").prepend(articleLink);
+           $("#articleArea").append(articleLink);
 
           }
 
