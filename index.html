@@ -37,9 +37,9 @@
       </div>
       <div class="form-group">
         <label for="endYear">End Year (Optional):</label>
-        <input type="text" class="form-control" id="endYear">
+        <input type="text" minlength="4" maxlength="4" class="form-control" id="endYear">
       </div>
-      <input type="submit" value="Search">
+      <input type="submit" value="Search" id="find-article">
       <input type="reset" value="Clear Results">
     </form>
 
@@ -50,7 +50,50 @@
       <div class="row" id="topArticles">Top Articles</div>
       <div class="row" id="articleArea"></div>
     </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
+
+$("#find-article").on("click", function(){
+  event.preventDefault();
+
+  var articleSearch = $("#searchTerm").val();
+  var articleNum = $("#numOfRecords").val()
+  var articleStartYear = "begin_date="+$("#startYear").val()+"0101";
+  var articleEndYear = "end_date="+ $("#endYear").val() + "0101";
+
+  
+
+  var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q="+articleSearch+"&api-key=v4aiDXAyW5f6ElZhMn24JMuXjcsWIWZF&fq=headline:(\""+articleSearch+"\")&"+articleStartYear+"&="+articleEndYear+"&sort=newest"
+
+  console.log(queryURL)
+
+  $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function(obj){
+          console.log(obj)
+
+          for(var i = 0; i < articleNum; i++ ){
+            var articleLink = $("<div>").append($("<a>").text(obj.response.docs[i].headline.main).attr("href", obj.response.docs[i].web_url));
+          $ ("#articleArea").prepend(articleLink);
+
+          }
+
+        
+
+        });
+
+
+
+
+
+
+
+
+
+
+})
 
 </script>
   </body>
